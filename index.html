@@ -3,80 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Generador de Contraseñas Seguras</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
         }
+
         .container {
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            max-width: 480px;
             width: 100%;
-            max-width: 500px;
         }
+
         h1 {
             text-align: center;
             color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
         }
+
         .password-output {
-            margin: 20px 0;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            word-wrap: break-word;
-            text-align: center;
-            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f1f3f5;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 20px;
             font-weight: bold;
             color: #444;
+            word-wrap: break-word;
+            margin-bottom: 20px;
         }
+
         .password-strength {
             text-align: center;
-            margin-top: 10px;
-            color: #777;
+            color: #555;
+            margin-bottom: 10px;
         }
+
         .slider-container {
-            margin-top: 20px;
+            margin-bottom: 20px;
         }
+
         input[type="range"] {
             width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background-color: #ddd;
+            cursor: pointer;
         }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
         .settings {
             display: flex;
             justify-content: space-between;
-            margin-top: 10px;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        .settings label {
+
+        label {
             font-size: 14px;
+            color: #555;
         }
-        .button {
+
+        button {
             display: block;
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: #007bff;
             color: white;
-            border: none;
-            border-radius: 5px;
             font-size: 16px;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 20px;
+            transition: background-color 0.3s;
         }
-        .button:disabled {
+
+        button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
+
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
         @media (max-width: 600px) {
             .container {
-                padding: 15px;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .password-output {
+                font-size: 18px;
             }
         }
     </style>
@@ -105,12 +158,16 @@
             </label>
         </div>
 
-        <button class="button" id="generateButton">Generar Contraseña</button>
+        <button id="generateButton">Generar Contraseña</button>
+        <button id="copyButton" style="margin-top: 10px;">Copiar al portapapeles</button>
 
-        <button class="button" id="copyButton" style="margin-top: 10px;">Copiar al portapapeles</button>
+        <div class="footer">
+            <p>Hecho con ❤️ por <a href="https://github.com" target="_blank">Tu Nombre</a></p>
+        </div>
     </div>
 
     <script>
+        // Elementos del DOM
         const lengthSlider = document.getElementById('lengthSlider');
         const lengthValue = document.getElementById('lengthValue');
         const passwordOutput = document.getElementById('passwordOutput');
@@ -121,8 +178,10 @@
         const includeNumbers = document.getElementById('includeNumbers');
         const includeSpecials = document.getElementById('includeSpecials');
 
+        // Función para generar un número aleatorio dentro de un rango
         const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
+        // Función para generar una contraseña segura
         const generatePassword = () => {
             const length = lengthSlider.value;
             const useUppercase = includeUppercase.checked;
@@ -156,12 +215,14 @@
             passwordStrength.textContent = `Fortaleza de la contraseña: ${strength}`;
         };
 
+        // Función para copiar la contraseña al portapapeles
         const copyPassword = () => {
             navigator.clipboard.writeText(passwordOutput.textContent).then(() => {
                 alert('Contraseña copiada al portapapeles');
             });
         };
 
+        // Eventos
         generateButton.addEventListener('click', generatePassword);
         copyButton.addEventListener('click', copyPassword);
 
