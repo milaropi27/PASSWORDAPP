@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Contraseñas Seguras</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .password-output {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            word-wrap: break-word;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #444;
+        }
+        .password-strength {
+            text-align: center;
+            margin-top: 10px;
+            color: #777;
+        }
+        .slider-container {
+            margin-top: 20px;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .settings {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .settings label {
+            font-size: 14px;
+        }
+        .button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Generador de Contraseñas Seguras</h1>
+        <div class="password-output" id="passwordOutput">Tu contraseña segura aparecerá aquí</div>
+        <div class="password-strength" id="passwordStrength">Fortaleza de la contraseña: Débil</div>
+
+        <div class="slider-container">
+            <label for="lengthSlider">Longitud de la contraseña: <span id="lengthValue">12</span> caracteres</label>
+            <input type="range" id="lengthSlider" min="8" max="20" value="12">
+        </div>
+
+        <div class="settings">
+            <label>
+                <input type="checkbox" id="includeUppercase"> Incluir mayúsculas
+            </label>
+            <label>
+                <input type="checkbox" id="includeNumbers"> Incluir números
+            </label>
+            <label>
+                <input type="checkbox" id="includeSpecials"> Incluir caracteres especiales
+            </label>
+        </div>
+
+        <button class="button" id="generateButton">Generar Contraseña</button>
+
+        <button class="button" id="copyButton" style="margin-top: 10px;">Copiar al portapapeles</button>
+    </div>
+
+    <script>
+        const lengthSlider = document.getElementById('lengthSlider');
+        const lengthValue = document.getElementById('lengthValue');
+        const passwordOutput = document.getElementById('passwordOutput');
+        const passwordStrength = document.getElementById('passwordStrength');
+        const generateButton = document.getElementById('generateButton');
+        const copyButton = document.getElementById('copyButton');
+        const includeUppercase = document.getElementById('includeUppercase');
+        const includeNumbers = document.getElementById('includeNumbers');
+        const includeSpecials = document.getElementById('includeSpecials');
+
+        const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+        const generatePassword = () => {
+            const length = lengthSlider.value;
+            const useUppercase = includeUppercase.checked;
+            const useNumbers = includeNumbers.checked;
+            const useSpecials = includeSpecials.checked;
+
+            const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+            const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numberChars = '0123456789';
+            const specialChars = '!@#$%^&*()_-+=<>?/';
+
+            let chars = lowercaseChars;
+            if (useUppercase) chars += uppercaseChars;
+            if (useNumbers) chars += numberChars;
+            if (useSpecials) chars += specialChars;
+
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += chars.charAt(getRandomInt(0, chars.length - 1));
+            }
+
+            passwordOutput.textContent = password;
+
+            // Calcular la fortaleza de la contraseña
+            let strength = 'Débil';
+            if (password.length >= 12 && useUppercase && useNumbers && useSpecials) {
+                strength = 'Segura';
+            } else if (password.length >= 8) {
+                strength = 'Moderada';
+            }
+            passwordStrength.textContent = `Fortaleza de la contraseña: ${strength}`;
+        };
+
+        const copyPassword = () => {
+            navigator.clipboard.writeText(passwordOutput.textContent).then(() => {
+                alert('Contraseña copiada al portapapeles');
+            });
+        };
+
+        generateButton.addEventListener('click', generatePassword);
+        copyButton.addEventListener('click', copyPassword);
+
+        lengthSlider.addEventListener('input', () => {
+            lengthValue.textContent = lengthSlider.value;
+        });
+    </script>
+
+</body>
+</html>
